@@ -43,13 +43,15 @@ public class TransitEncryptedKeyValueInitializer
                   TransitEncryptedKeyValueProperties.PREFIX,
                   TransitEncryptedKeyValueProperties.class);
 
-          if (StringUtils.isBlank(properties.getTransitKeyName())) {}
-          properties.setTransitKeyName(
-              binder
-                  .bind("spring.cloud.vault.application-name", String.class)
-                  .orElse(
-                      binder.bind("spring.application.name", String.class).orElse("application")));
-
+          if (StringUtils.isBlank(properties.getTransitKeyName())) {
+            properties.setTransitKeyName(
+                binder
+                    .bind("spring.cloud.vault.application-name", String.class)
+                    .orElse(
+                        binder
+                            .bind("spring.application.name", String.class)
+                            .orElse("application")));
+          }
           return properties;
         });
 
