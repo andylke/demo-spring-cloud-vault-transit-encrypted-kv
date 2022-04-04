@@ -1,5 +1,8 @@
 package com.github.andylke.demo.vault;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -15,6 +18,8 @@ public class TransitEncryptedKeyValueProperties {
   private String transitKeyName;
 
   private String transitPath = "transit";
+
+  private Map<String, String> postDecryptMappings = new HashMap<String, String>();
 
   public boolean isTransitEncrypted() {
     return transitEncrypted;
@@ -38,6 +43,10 @@ public class TransitEncryptedKeyValueProperties {
 
   public void setTransitPath(String transitPath) {
     this.transitPath = transitPath;
+  }
+
+  public Map<String, String> getPostDecryptMappings() {
+    return postDecryptMappings;
   }
 
   @Override

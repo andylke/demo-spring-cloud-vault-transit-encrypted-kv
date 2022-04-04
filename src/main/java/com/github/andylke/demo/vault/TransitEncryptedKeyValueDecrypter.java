@@ -2,6 +2,7 @@ package com.github.andylke.demo.vault;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -17,13 +18,16 @@ public class TransitEncryptedKeyValueDecrypter {
 
   private static final String TRANSIT_ENCRYPTED_PREFIX = "vault:v";
 
-  private final TransitEncryptedKeyValueProperties properties;
-
   private final VaultTransitOperations transitOperations;
+
+  private final String transitKeyName;
+
+  private final Map<String, String> postDecryptMappings;
 
   public TransitEncryptedKeyValueDecrypter(
       TransitEncryptedKeyValueProperties properties, VaultTemplate vaultTemplate) {
-    this.properties = properties;
+    this.transitKeyName = properties.getTransitKeyName();
+    this.postDecryptMappings = properties.getPostDecryptMappings();
     this.transitOperations = vaultTemplate.opsForTransit(properties.getTransitPath());
   }
 
@@ -39,6 +43,7 @@ public class TransitEncryptedKeyValueDecrypter {
 
     final List<String> decryptedValues = decryptValues(encryptedKeyValues);
     clearAndPopulateTo(properties, encryptedKeyValues, decryptedValues);
+    mapProperties(properties);
   }
 
   private LinkedHashMap<String, String> filterEncryptedKeyValues(
@@ -63,7 +68,7 @@ public class TransitEncryptedKeyValueDecrypter {
   private List<String> decryptValues(LinkedHashMap<String, String> encryptedKeyValues) {
     final List<VaultDecryptionResult> results =
         transitOperations.decrypt(
-            properties.getTransitKeyName(),
+            transitKeyName,
             encryptedKeyValues
                 .entrySet()
                 .stream()
@@ -83,5 +88,14 @@ public class TransitEncryptedKeyValueDecrypter {
     for (Entry<String, String> entry : encryptedKeyValues.entrySet()) {
       properties.put(entry.getKey(), decryptedValues.get(index++));
     }
+  }
+
+  private void mapProperties(Properties properties) {
+    postDecryptMappings.forEach(
+        (key, value) -> {
+          if (properties.containsKey(value)) {
+            properties.put(key, properties.get(value));
+          }
+        });
   }
 }
