@@ -1,25 +1,23 @@
 spring:
   application:
     name: demo-spring-cloud-vault-transit
-  profiles:
-    active: DEV
   
   config:
     import: vault://
   cloud:
     vault:
       enabled: true
-      application-name: ttl/mobius/core
-      uri: https://vault.mobius.aliyun.sdecloud.tech
-      token: s.K7DhPAE3azrvQ7rvfdHG3VmJ
+      application-name: spring-cloud-vault
+      uri: http://localhost:8200
+      token: s.FZTp0c0fJV1D05D1qYDZsAtM
       kv:
         transit-encrypted: true
         transit-path: transit
-        transit-key-name: encryptor
+        transit-key-name: spring-cloud-vault
         post-decrypt-mappings:
-          db.username: tidb.username
-          db.password: tidb.password
-          redis.password: cache.password
+          db.name: h2database.name
+          db.username: h2database.username
+          db.password: h2database.password
 
 management:
   endpoints:

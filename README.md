@@ -3,6 +3,7 @@
 ## Terminal 1
 
 ### Start Server
+
 `vault server -config vault-server.hcl`
 
 ```
@@ -23,7 +24,6 @@
 2022-03-22T21:10:11.886+0800 [INFO]  proxy environment: http_proxy="" https_proxy="" no_proxy=""
 2022-03-22T21:10:11.944+0800 [WARN]  no `api_addr` value specified in config or in VAULT_API_ADDR; falling back to detection if possible, but this value should be manually set
 ```
-
 
 ## Terminal 2
 
@@ -52,7 +52,8 @@ It is possible to generate new unseal keys, provided you have a quorum of
 existing unseal keys shares. See "vault operator rekey" for more information.
 ```
 
-### 
+###
+
 `export VAULT_TOKEN=s.9DnSsGSceorKLGtD7EINh18M`
 
 `vault status`
@@ -71,7 +72,6 @@ Version            1.9.4
 Storage Type       file
 HA Enabled         false
 ```
-
 
 ### Unseal
 
@@ -93,6 +93,7 @@ HA Enabled      false
 ```
 
 ### Enable Secrets
+
 `vault secrets enable -path=secret/ kv`
 
 ```
@@ -108,6 +109,7 @@ Success! Enabled the transit secrets engine at: transit/
 ```
 
 ### Create Transit Encryption Key
+
 `vault write -f transit/keys/spring-cloud-vault`
 
 ```
@@ -118,14 +120,14 @@ Success! Data written to: transit/keys/spring-cloud-vault
 
 `echo -n demo_spring_cloud_vault_transit_encrypted_kv | base64`
 
-| Key | Text | Base64 |
-|-----|------|--------|
-| db.name     | demo_spring_cloud_vault_transit_encrypted_kv | ZGVtb19zcHJpbmdfY2xvdWRfdmF1bHRfdHJhbnNpdF9lbmNyeXB0ZWRfa3Y= |
-| db.username | demo | ZGVtbw== |
-| db.password | demo@123 | ZGVtb0AxMjM= |
-
+| Key                 | Text                                         | Base64                                                       |
+| ------------------- | -------------------------------------------- | ------------------------------------------------------------ |
+| h2database.name     | demo_spring_cloud_vault_transit_encrypted_kv | ZGVtb19zcHJpbmdfY2xvdWRfdmF1bHRfdHJhbnNpdF9lbmNyeXB0ZWRfa3Y= |
+| h2database.username | demo                                         | ZGVtbw==                                                     |
+| h2database.password | demo@123                                     | ZGVtb0AxMjM=                                                 |
 
 ### Encrypt
+
 `vault write transit/encrypt/spring-cloud-vault plaintext=ZGVtb19zcHJpbmdfY2xvdWRfdmF1bHRfdHJhbnNpdF9lbmNyeXB0ZWRfa3Y=`
 
 ```
@@ -153,14 +155,11 @@ ciphertext     vault:v1:tKoHqzhbWzw02C1yRwRkFBC1mh7gHoBGCzR2kTU+25JWSeqw
 key_version    1
 ```
 
-
-| Key | Text | Base64 | Transit Encrypted |
-|-----|------|--------|-------------------|
+| Key         | Text                                         | Base64                                                       | Transit Encrypted                                                                                   |
+| ----------- | -------------------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
 | db.name     | demo_spring_cloud_vault_transit_encrypted_kv | ZGVtb19zcHJpbmdfY2xvdWRfdmF1bHRfdHJhbnNpdF9lbmNyeXB0ZWRfa3Y= | v1:fuEuSZZ5JARE6GrZSrfP550K/m1ekOgqSHlfyeRPFvL1QkT3a0GLKvu7gm+hbdlXfkWBXhaOGLfe3sbKhGNJqceZvgbSDtb1 |
-| db.username | demo | ZGVtbw== | vault:v1:pYM7KeN11NlcmSDc1kKRwPXbiL7uDdQ7Dg4mljdThfY= |
-| db.password | demo@123 | ZGVtb0AxMjM= | vault:v1:tKoHqzhbWzw02C1yRwRkFBC1mh7gHoBGCzR2kTU+25JWSeqw |
-
-
+| db.username | demo                                         | ZGVtbw==                                                     | vault:v1:pYM7KeN11NlcmSDc1kKRwPXbiL7uDdQ7Dg4mljdThfY=                                               |
+| db.password | demo@123                                     | ZGVtb0AxMjM=                                                 | vault:v1:tKoHqzhbWzw02C1yRwRkFBC1mh7gHoBGCzR2kTU+25JWSeqw                                           |
 
 ### Store secrets
 
@@ -188,9 +187,6 @@ db.password    vault:v1:tKoHqzhbWzw02C1yRwRkFBC1mh7gHoBGCzR2kTU+25JWSeqw
 db.username    vault:v1:pYM7KeN11NlcmSDc1kKRwPXbiL7uDdQ7Dg4mljdThfY=
 ```
 
-
-
-
 ## Application Properties
 
 `application.yaml`
@@ -209,7 +205,7 @@ spring:
   h2:
     console:
       enabled: true
-  
+
   config:
     import: vault://
   cloud:
@@ -222,7 +218,6 @@ spring:
       token: s.FZTp0c0fJV1D05D1qYDZsAtM
 ```
 
-
 ```
 /secret/{application}/{profile}
 /secret/{application}
@@ -232,8 +227,7 @@ spring:
 /secret/application
 ```
 
-| Arguments           | Source Property |
-|----------------------|-------|
-| application-name         | spring.cloud.vault.application-name / spring.application.name |
-| profile                  | spring.profiles.active |
-
+| Arguments        | Source Property                                               |
+| ---------------- | ------------------------------------------------------------- |
+| application-name | spring.cloud.vault.application-name / spring.application.name |
+| profile          | spring.profiles.active                                        |
